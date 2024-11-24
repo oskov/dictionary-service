@@ -1,0 +1,9 @@
+CREATE TABLE word_definitions (
+    id INT AUTOINCREMENT PRIMARY KEY NOT NULL,
+    word_id INT NOT NULL,
+    definition TEXT NOT NULL,
+    priority INT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+
+    FOREIGN KEY (word_id) REFERENCES words(id) ON DELETE CASCADE
+);

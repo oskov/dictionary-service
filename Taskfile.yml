@@ -1,0 +1,44 @@
+version: '3'
+
+vars:
+  LOCAL_BIN: "{{.PWD}}/bin"
+  GO_TOOL_CHAIN: go1.23.3
+
+tasks:
+  oapi:
+    desc: "Generate Go code from OpenAPI spec"
+    deps:
+      - install-oapi
+    sources:
+      - ./**/openapi.yaml
+    generates:
+      - ./**/openapi*.gen.go  
+    cmds: 
+      - mkdir -p ./internal/api/http/oapi
+      - "{{.LOCAL_BIN}}/oapi-codegen -package oapi -generate chi-server,types,strict-server -o ./internal/api/http/oapi/api.gen.go ./api/openapi/openapi.yaml"
+      - "{{.LOCAL_BIN}}/oapi-codegen -package oapi -generate spec -o ./internal/api/http/oapi/spec.gen.go ./api/openapi/openapi.yaml"
+      - "{{.LOCAL_BIN}}/oapi-codegen -package oapi -generate client -o ./internal/api/http/oapi/client.gen.go ./api/openapi/openapi.yaml"
+
+  lint:
+    desc: "Run golangci-lint"
+    deps:
+      - install-linter
+    cmd: "{{.LOCAL_BIN}}/golangci-lint run"
+    sources:
+      - "**/*.go"
+
+
+  install-linter:
+    desc: "Install golangci-lint"
+    vars:
+      GOLANGCI_LINT_VERSION: "v1.62.0"
+    cmd: GOBIN={{.LOCAL_BIN}} GOTOOLCHAIN={{.GO_TOOL_CHAIN}} go install github.com/golangci/golangci-lint/cmd/golangci-lint@{{.GOLANGCI_LINT_VERSION}}
+    run: once    
+
+
+  install-oapi:
+    desc: "Install oapi-codegen"
+    vars:
+      OAPI_CODEGEN_VERSION: "v2.4.1"
+    cmd: GOBIN={{.LOCAL_BIN}} GOTOOLCHAIN={{.GO_TOOL_CHAIN}} go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@{{.OAPI_CODEGEN_VERSION}}
+    run: once  

@@ -1,0 +1,48 @@
+openapi: 3.0.0
+info:
+  title: Dictionary Service API
+  version: 1.0.0
+
+paths:
+  /word/{word}:
+    get:
+      summary: Get word details
+      description: Retrieve details and definitions for a given word.
+      parameters:
+        - name: word
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The word to retrieve details for.
+      responses:
+        '200':
+          description: A successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetWordResult'
+        '400':
+          description: Bad request
+        '404':
+          description: Word not found
+
+components:
+  schemas:
+    GetWordResult:
+      type: object
+      properties:
+        Word:
+          type: string
+          description: The word being retrieved.
+        Definitions:
+          type: array
+          items:
+            $ref: '#/components/schemas/GetWordResultDefinition'
+
+    GetWordResultDefinition:
+      type: object
+      properties:
+        Definition:
+          type: string
+          description: The definition of the word.
