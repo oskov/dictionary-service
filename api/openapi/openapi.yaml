@@ -24,13 +24,16 @@ paths:
                 $ref: '#/components/schemas/GetWordResult'
         '400':
           description: Bad request
-        '404':
-          description: Word not found
+        '500':
+          descirption: Internal server error  
 
 components:
   schemas:
     GetWordResult:
       type: object
+      required:
+        - Word
+        - Definitions
       properties:
         Word:
           type: string
@@ -42,6 +45,8 @@ components:
 
     GetWordResultDefinition:
       type: object
+      required:
+        - Definition
       properties:
         Definition:
           type: string

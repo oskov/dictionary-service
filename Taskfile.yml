@@ -19,6 +19,11 @@ tasks:
       - "{{.LOCAL_BIN}}/oapi-codegen -package oapi -generate spec -o ./internal/api/http/oapi/spec.gen.go ./api/openapi/openapi.yaml"
       - "{{.LOCAL_BIN}}/oapi-codegen -package oapi -generate client -o ./internal/api/http/oapi/client.gen.go ./api/openapi/openapi.yaml"
 
+  create-migration:
+    desc: "Create a new migration"
+    cmds:
+      - $HOME/go/bin/migrate create -ext sql -dir db/migrations -seq {{.CLI_ARGS}}
+
   lint:
     desc: "Run golangci-lint"
     deps:

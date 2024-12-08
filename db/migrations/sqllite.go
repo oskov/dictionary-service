@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/sqlite"
@@ -18,6 +19,8 @@ var migrationsFiles embed.FS
 
 func checkDbFile(dbPath string) error {
 	if _, err := os.Stat(dbPath); os.IsNotExist(err) {
+		dirPath := path.Dir(dbPath)
+		os.MkdirAll(dirPath, os.ModePerm)
 		file, err := os.Create(dbPath)
 		if err != nil {
 			return fmt.Errorf("failed to create SQLite database file: %w", err)
@@ -47,7 +50,7 @@ func RunSQLLite(dbPath string) error {
 	}
 
 	// Create source driver for embedded migrations
-	d, err := iofs.New(migrationsFiles, "migrations")
+	d, err := iofs.New(migrationsFiles, ".")
 	if err != nil {
 		return fmt.Errorf("failed to create source driver: %w", err)
 	}

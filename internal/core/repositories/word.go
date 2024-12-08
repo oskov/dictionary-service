@@ -22,6 +22,13 @@ type WordDefinition struct {
 	CreatedAt  time.Time `db:"created_at"`
 }
 
+type WordDefinitionExample struct {
+	ID               int64     `db:"id"`
+	WordDefinitionID int64     `db:"word_definition_id"`
+	Example          string    `db:"example"`
+	CreatedAt        time.Time `db:"created_at"`
+}
+
 type WordRepository struct {
 	db *sqlx.DB
 }

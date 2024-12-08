@@ -16,16 +16,16 @@ import (
 
 // GetWordResult defines model for GetWordResult.
 type GetWordResult struct {
-	Definitions *[]GetWordResultDefinition `json:"Definitions,omitempty"`
+	Definitions []GetWordResultDefinition `json:"Definitions"`
 
 	// Word The word being retrieved.
-	Word *string `json:"Word,omitempty"`
+	Word string `json:"Word"`
 }
 
 // GetWordResultDefinition defines model for GetWordResultDefinition.
 type GetWordResultDefinition struct {
 	// Definition The definition of the word.
-	Definition *string `json:"Definition,omitempty"`
+	Definition string `json:"Definition"`
 }
 
 // ServerInterface represents all server handlers.
@@ -224,11 +224,11 @@ func (response GetWordWord400Response) VisitGetWordWordResponse(w http.ResponseW
 	return nil
 }
 
-type GetWordWord404Response struct {
+type GetWordWord500Response struct {
 }
 
-func (response GetWordWord404Response) VisitGetWordWordResponse(w http.ResponseWriter) error {
-	w.WriteHeader(404)
+func (response GetWordWord500Response) VisitGetWordWordResponse(w http.ResponseWriter) error {
+	w.WriteHeader(500)
 	return nil
 }
 
