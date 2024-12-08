@@ -16,16 +16,17 @@ import (
 
 // GetWordResult defines model for GetWordResult.
 type GetWordResult struct {
-	Definitions []GetWordResultDefinition `json:"Definitions"`
+	Definitions []GetWordResultDefinition `json:"definitions"`
 
 	// Word The word being retrieved.
-	Word string `json:"Word"`
+	Word string `json:"word"`
 }
 
 // GetWordResultDefinition defines model for GetWordResultDefinition.
 type GetWordResultDefinition struct {
 	// Definition The definition of the word.
-	Definition string `json:"Definition"`
+	Definition string   `json:"definition"`
+	Examples   []string `json:"examples"`
 }
 
 // ServerInterface represents all server handlers.

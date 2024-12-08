@@ -38,6 +38,7 @@ func (api *API) GetWordWord(
 	for _, definition := range word.Definitions {
 		resp.Definitions = append(resp.Definitions, oapi.GetWordResultDefinition{
 			Definition: definition.Definition,
+			Examples:   definition.Examples,
 		})
 	}
 

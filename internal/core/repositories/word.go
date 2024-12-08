@@ -40,6 +40,7 @@ func NewWordRepository(db *sqlx.DB) *WordRepository {
 type DefinitionWithPriority struct {
 	Definition string
 	Priority   int64
+	Examples   []string
 }
 
 type AddResult struct {
@@ -69,27 +70,42 @@ func (r *WordRepository) AddWordWithDefinitions(
 		}
 	}
 
-	insertQuery := "INSERT INTO word_definitions (word_id, definition, priority) VALUES "
+	insertQuery := "INSERT INTO word_definitions (word_id, definition, priority, created_at) VALUES "
 
 	insertQueryParts := make([]string, 0, len(definitions))
 	insertValues := make([]any, 0, len(definitions)*3)
 
 	for _, def := range definitions {
-		insertQueryParts = append(insertQueryParts, "(?, ?, ?)")
-		insertValues = append(insertValues, result.WordID, def.Definition, def.Priority)
+		insertQueryParts = append(insertQueryParts, "(?, ?, ?, ?)")
+		insertValues = append(insertValues, result.WordID, def.Definition, def.Priority, time.Now())
 	}
 
 	insertQuery += strings.Join(insertQueryParts, ", ")
+	insertQuery += " RETURNING id;"
 
-	insertQuery += "RETURNING id;"
-
-	var ids []int64
-
-	err = r.db.Select(&ids, insertQuery, insertValues...)
+	var definitionIDs []int64
+	err = r.db.Select(&definitionIDs, insertQuery, insertValues...)
 	if err != nil {
 		return result, err
 	}
-	result.DefinitionIDs = ids
+	result.DefinitionIDs = definitionIDs
+
+	for i, defID := range definitionIDs {
+		exampleInsertQuery := "INSERT INTO word_definition_examples (word_definition_id, example, created_at) VALUES "
+		exampleInsertQueryParts := make([]string, 0, len(definitions[i].Examples))
+		exampleInsertValues := make([]any, 0, len(definitions[i].Examples)*2)
+
+		for _, example := range definitions[i].Examples {
+			exampleInsertQueryParts = append(exampleInsertQueryParts, "(?, ?, ?)")
+			exampleInsertValues = append(exampleInsertValues, defID, example, time.Now())
+		}
+
+		exampleInsertQuery += strings.Join(exampleInsertQueryParts, ", ")
+		_, err := r.db.Exec(exampleInsertQuery, exampleInsertValues...)
+		if err != nil {
+			return result, err
+		}
+	}
 
 	return result, nil
 }

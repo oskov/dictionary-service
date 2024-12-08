@@ -37,6 +37,7 @@ type GetWordResult struct {
 type GetWordResultDefinition struct {
 	WordDefinitionID int64
 	Definition       string
+	Examples         []string
 }
 
 func (s *WordService) GetWord(word string) (GetWordResult, error) {
@@ -81,6 +82,7 @@ func (s *WordService) loadNewWord(word string) (GetWordResult, error) {
 		defs = append(defs, repositories.DefinitionWithPriority{
 			Definition: v.Definition,
 			Priority:   int64(i),
+			Examples:   v.Examples,
 		})
 	}
 
@@ -97,6 +99,7 @@ func (s *WordService) loadNewWord(word string) (GetWordResult, error) {
 		result.Definitions = append(result.Definitions, GetWordResultDefinition{
 			WordDefinitionID: addResult.DefinitionIDs[i],
 			Definition:       v.Definition,
+			Examples:         v.Examples,
 		})
 	}
 

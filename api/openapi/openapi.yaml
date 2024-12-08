@@ -32,13 +32,13 @@ components:
     GetWordResult:
       type: object
       required:
-        - Word
-        - Definitions
+        - word
+        - definitions
       properties:
-        Word:
+        word:
           type: string
           description: The word being retrieved.
-        Definitions:
+        definitions:
           type: array
           items:
             $ref: '#/components/schemas/GetWordResultDefinition'
@@ -46,8 +46,13 @@ components:
     GetWordResultDefinition:
       type: object
       required:
-        - Definition
+        - definition
+        - examples
       properties:
-        Definition:
+        definition:
           type: string
           description: The definition of the word.
+        examples:
+          type: array
+          items:
+            type: string  
